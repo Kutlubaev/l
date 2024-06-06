@@ -7,16 +7,15 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDaoJDBCImpl extends Util implements UserDao {
-    Connection connection = getConnection();
+public class UserDaoJDBCImpl implements UserDao {
+    Connection connection = Util.getConnection();
 
     public UserDaoJDBCImpl() {
 
     }
 
     public void createUsersTable() {
-        //PreparedStatement ps = null;
-        String sql = "CREATE TABLE users (id BIGINT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(45), lastName VARCHAR(45), age TINYINT)";
+        String sql = "CREATE TABLE IF NOT EXISTS users (id BIGINT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(45), lastName VARCHAR(45), age TINYINT)";
         try(Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
         } catch (SQLException e) {
@@ -25,8 +24,7 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
     }
 
     public void dropUsersTable() {
-        //PreparedStatement ps = null;
-        String sql = "DROP TABLE users";
+        String sql = "DROP TABLE IF EXISTS users";
         try(Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
         } catch (SQLException e) {
@@ -35,12 +33,12 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
     }
 
     public void saveUser(String name, String lastName, byte age) {
-        //PreparedStatement ps = null;
         String sql = "INSERT INTO users (name, lastName, age) VALUES (?, ?, ?)";
         try(PreparedStatement pst = connection.prepareStatement(sql)) {
             pst.setString(1, name);
             pst.setString(2, lastName);
             pst.setInt(3, age);
+
             pst.executeUpdate();
         } catch (SQLException e) {
             System.err.println("Ошибка при добавлении пользователя" + e.getMessage());
@@ -48,7 +46,6 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
     }
 
     public void removeUserById(long id) {
-        //PreparedStatement ps = null;
         String sql = "DELETE FROM users WHERE id = ?";
         try (PreparedStatement pst = connection.prepareStatement(sql)) {
             pst.setLong(1, id);
@@ -78,7 +75,6 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
     }
 
     public void cleanUsersTable() {
-        PreparedStatement ps = null;
         String sql = "DELETE FROM users";
         try(PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.executeUpdate(sql);
