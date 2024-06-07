@@ -11,7 +11,7 @@ import java.util.List;
 
 public class UserServiceImpl implements UserService {
     //UserDao userDao = new UserDaoJDBCImpl();
-    UserDao userDaoHibernate = new UserDaoHibernateImpl();
+    private final UserDao userDaoHibernate = new UserDaoHibernateImpl();
     public void createUsersTable() {
         userDaoHibernate.createUsersTable();
     }
@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
 
     public void removeUserById(long id) {
         userDaoHibernate.removeUserById(id);
-        System.out.println("User с id " + id + " удален из базы данных");
+        //System.out.println("User с id " + id + " удален из базы данных");
     }
 
     public List<User> getAllUsers() {
