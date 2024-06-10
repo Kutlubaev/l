@@ -56,7 +56,7 @@ public class UserDaoJDBCImpl implements UserDao {
 //        }
     }
 
-    public List<User> getAllUsers() throws SQLException {
+    public List<User> getAllUsers()  {
 //        List<User> users = new ArrayList<User>();
 //        String sql = "SELECT * FROM users";
 //        try (Statement statement = connection.createStatement()) {

@@ -2,19 +2,19 @@ package jm.task.core.jdbc.dao;
 
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
-import javax.persistence.Query;
-import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
-    private static final SessionFactory sessionFactory = Util.getSessionFactory();
+    private final SessionFactory sessionFactory;
 
     public UserDaoHibernateImpl() {
-
+        this.sessionFactory = Util.getSessionFactory();
     }
 
     @Override
@@ -87,17 +87,19 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public List<User> getAllUsers() {
-        Transaction transaction = null;
         List<User> users = null;
         try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            users = session.createQuery("from User").list();
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
+            Transaction transaction = null;
+            try {
+                transaction = session.beginTransaction();
+                users = session.createQuery("from User", User.class).list();
+                transaction.commit();
+            } catch (Exception e) {
+                if (transaction != null) {
+                    transaction.rollback();
+                }
+                throw e;
             }
-            System.err.println("Ошибка при получении пользователей" + e);
         }
         return users;
     }
